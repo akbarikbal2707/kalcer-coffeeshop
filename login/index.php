@@ -6,25 +6,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Ambil user dari database (gunakan nama kolom id_user sesuai DB)
     $sql = "SELECT * FROM users WHERE username = '$username' LIMIT 1";
     $result = mysqli_query($conn, $sql);
     $user = mysqli_fetch_assoc($result);
 
-    // Cek password
     if ($user && password_verify($password, $user['password'])) {
-        // simpan id_user supaya worker.php bisa baca
-        $_SESSION['user_id'] = $user['id_user'];
+
+        $_SESSION['user_id'] = $user['id']; // FIX DI SINI
         $_SESSION['username'] = $user['username'];
         $_SESSION['role'] = $user['role'];
 
-        // Redirect sesuai role
         if ($user['role'] === 'owner') {
             header("Location: ../owner/owner.php");
         } else {
             header("Location: ../worker/worker.php");
         }
         exit;
+
     } else {
         $error = "Username atau password salah!";
     }
